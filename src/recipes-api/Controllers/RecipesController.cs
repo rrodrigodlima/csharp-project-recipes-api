@@ -43,14 +43,19 @@ public class RecipesController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] Recipe recipe)
     {
-        throw new NotImplementedException();
+        this._service.AddRecipe(recipe);
+        return CreatedAtRoute("GetRecipe", new { name = recipe.Name }, recipe);
     }
 
     // 4 - Sua aplicação deve ter o endpoint PUT /recipe
     [HttpPut("{name}")]
     public IActionResult Update(string name, [FromBody] Recipe recipe)
     {
-        throw new NotImplementedException();
+        if (!_service.RecipeExists(name) || !String.Equals(name, recipe.Name, StringComparison.OrdinalIgnoreCase)) return BadRequest();
+
+        _service.UpdateRecipe(recipe);
+
+        return NoContent();
     }
 
     // 5 - Sua aplicação deve ter o endpoint DEL /recipe
