@@ -36,14 +36,24 @@ public class UserController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] User user)
     {
-        throw new NotImplementedException();
+        _service.AddUser(user);
+
+        return CreatedAtRoute("GetUser", new { email = user.Email }, user);
     }
 
     // "8 - Sua aplicação deve ter o endpoint PUT /user
     [HttpPut("{email}")]
     public IActionResult Update(string email, [FromBody] User user)
     {
-        throw new NotImplementedException();
+        if (!_service.UserExists(email))
+            return NotFound();
+
+        if (!string.Equals(email, user.Email, StringComparison.OrdinalIgnoreCase))            // Return a response with HTTP status code 400 (Bad Request).
+            return BadRequest();
+
+        _service.UpdateUser(user);
+
+        return Ok(user);
     }
 
     // 9 - Sua aplicação deve ter o endpoint DEL /user
